@@ -1,7 +1,10 @@
 # Jogo da Memória com Tkinter
 
-Trabalho final da disciplina Computação 2 da UFRJ, desenvolvido por Bernardo Welsing, Gabriel, e Leticia. O objetivo é criar um jogo da memória funcional com integração a banco de dados e interface gráfica em Python.
+Trabalho final da disciplina Computação 2 da UFRJ. 
+Desenvolvido por Bernardo Welsing, Gabriel Soares Tiburcio, e Leticia Silveria da Costa. 
 
+
+O objetivo é criar um jogo da memória funcional com integração a banco de dados e interface gráfica em Python.
 ## Funcionalidades
 
 - Escolha de níveis de dificuldade: Fácil (4x4), Médio (5x5) e Difícil (6x6).
