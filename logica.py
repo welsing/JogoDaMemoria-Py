@@ -212,11 +212,13 @@ if __name__ == "__main__":
 
     # Teste para resetar_cartas
     print("Teste: resetar_cartas()")
+    # Inicializa um estado controlado para a matriz
+    jogo.estado_cartas = np.full((jogo.tamanho, jogo.tamanho), False)  # Matriz inicial com False
     jogo.estado_cartas[0, 0] = True
     jogo.estado_cartas[0, 1] = True
-    print("Estado antes do reset:", jogo.estado_cartas)
-    ## Resultado esperado: Estado antes do reset: Uma matriz com True nas posições (0,0) e (0,1).
+    jogo.estado_cartas[3, 2] = True
+    print("Estado antes do reset: \n", jogo.estado_cartas)  ## Resultado esperado: Uma matriz com True nas posições (0,0), (0,1) e (3, 2).
+    # Chama o método a ser testado
     jogo.resetar_cartas((0, 0), (0, 1))
-    print("Estado após o reset:", jogo.estado_cartas)
-    ## Resultado esperado: Estado após o reset: Uma matriz com False em todas as posições.
+    print("Estado após o reset:\n", jogo.estado_cartas) ## Resultado esperado: Uma matriz com False em todas as posições.    
     print("-" * 50)
