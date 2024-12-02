@@ -183,7 +183,7 @@ class InterfaceJogo:
 
                 botao_carta.grid(row=linha, column=coluna, padx=5, pady=5)
                 self.tabuleiro[(linha, coluna)] = botao_carta
-                
+
         self.atualizar_tempo()
 
         # Botão de voltar
@@ -236,14 +236,15 @@ class InterfaceJogo:
 
 
     def iniciar_jogo(self, tamanho, tentativas):
-        """Inicializa a lógica"""
+        """Inicializa a lógica e cria a tela do jogo"""
         print(f"Iniciando jogo para o jogador: {self.jogador.nome}")  # Log para debug
+        self.tempo_inicio = time.time()  # Inicializa o temporizador
+        self.tempo_em_andamento = True  # Garante que o tempo será atualizado
         self.logica_jogo = LogicaJogo(tamanho, tentativas)
         self.criar_tela_jogo()
-        self.tempo_inicio = time.time()  # Inicializa o temporizador
         self.jogador.vitorias = self.db.obter_vitorias(self.jogador.nome)  # Atualiza vitórias
         print(f"Vitórias carregadas: {self.jogador.vitorias}")  # Log para debug
- 
+
     def ao_clicar(self, linha, coluna):
         """
         Ação ao clicar em uma carta:
@@ -307,11 +308,11 @@ class InterfaceJogo:
 
     def atualizar_tempo(self):
         """Atualiza o contador de tempo na tela do jogo"""
-        if self.tempo_inicio is not None:
+        if self.tempo_inicio is not None and self.tempo_em_andamento:
             tempo_passado = int(time.time() - self.tempo_inicio)
             self.label_tempo.config(text=f"Tempo: {tempo_passado}s")
-        # Garante que o método seja chamado novamente após 1 segundo
-        self.janela.after(1000, self.atualizar_tempo)
+        if self.tempo_em_andamento:  # Continua chamando apenas se o tempo está ativo
+            self.janela.after(1000, self.atualizar_tempo)
 
     def alterar_estado_botoes(self, estado: str):
         """Ativa ou desativa todos os botões do tabuleiro"""
@@ -347,9 +348,21 @@ class InterfaceJogo:
     def verificar_e_exibir_vitoria(self):
         """Verifica se o jogador venceu e exibe mensagem de vitória"""
         if self.logica_jogo.verificar_vitoria():
-            self.db.registrar_vitoria(self.jogador.nome)  # Registra vitória no banco
-            self.jogador.vitorias = self.db.obter_vitorias(self.jogador.nome)  # Atualiza vitórias
-            messagebox.showinfo("Vitória", "Parabéns! Você encontrou todos os pares!")
+            # Para o temporizador
+            self.tempo_em_andamento = False
+            tempo_decorrido = int(time.time() - self.tempo_inicio)
+            
+            # Registra a vitória no banco
+            self.db.registrar_vitoria(self.jogador.nome)
+            self.jogador.vitorias = self.db.obter_vitorias(self.jogador.nome)
+            
+            # Exibe mensagem de vitória com o tempo
+            messagebox.showinfo(
+                "Vitória", 
+                f"Parabéns! Você encontrou todos os pares em {tempo_decorrido}s."
+            )
+        
+            # Retorna para a tela inicial
             self.voltar_para_tela_inicial(self.tela_jogo_frame)
 
 
