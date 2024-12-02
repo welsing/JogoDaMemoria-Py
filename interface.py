@@ -139,7 +139,7 @@ class InterfaceJogo:
             bg=self.ESTILOS["bg_primario"],
         )
         self.label_tempo.pack(pady=(10, 0))
-        self.atualizar_tempo()
+        
 
         # Contador de tentativas
         self.label_tentativas = tk.Label(
@@ -183,6 +183,8 @@ class InterfaceJogo:
 
                 botao_carta.grid(row=linha, column=coluna, padx=5, pady=5)
                 self.tabuleiro[(linha, coluna)] = botao_carta
+                
+        self.atualizar_tempo()
 
         # Botão de voltar
         botao_voltar = tk.Button(
@@ -233,6 +235,15 @@ class InterfaceJogo:
         self.janela.after(2000, ocultar_cartas)
 
 
+    def iniciar_jogo(self, tamanho, tentativas):
+        """Inicializa a lógica"""
+        print(f"Iniciando jogo para o jogador: {self.jogador.nome}")  # Log para debug
+        self.logica_jogo = LogicaJogo(tamanho, tentativas)
+        self.criar_tela_jogo()
+        self.tempo_inicio = time.time()  # Inicializa o temporizador
+        self.jogador.vitorias = self.db.obter_vitorias(self.jogador.nome)  # Atualiza vitórias
+        print(f"Vitórias carregadas: {self.jogador.vitorias}")  # Log para debug
+ 
     def ao_clicar(self, linha, coluna):
         """
         Ação ao clicar em uma carta:
@@ -296,12 +307,11 @@ class InterfaceJogo:
 
     def atualizar_tempo(self):
         """Atualiza o contador de tempo na tela do jogo"""
-        if self.tempo_inicio:
+        if self.tempo_inicio is not None:
             tempo_passado = int(time.time() - self.tempo_inicio)
             self.label_tempo.config(text=f"Tempo: {tempo_passado}s")
-            # Chama este método novamente após 1 segundo
-            self.janela.after(1000, self.atualizar_tempo)
-
+        # Garante que o método seja chamado novamente após 1 segundo
+        self.janela.after(1000, self.atualizar_tempo)
 
     def alterar_estado_botoes(self, estado: str):
         """Ativa ou desativa todos os botões do tabuleiro"""
@@ -349,11 +359,3 @@ class InterfaceJogo:
         self.voltar_para_tela_inicial(self.tela_jogo_frame)
 
 
-    def iniciar_jogo(self, tamanho, tentativas):
-        """Inicializa a lógica e cria a tela do jogo"""
-        print(f"Iniciando jogo para o jogador: {self.jogador.nome}")  # Log para debug
-        self.logica_jogo = LogicaJogo(tamanho, tentativas)
-        self.criar_tela_jogo()
-        self.jogador.vitorias = self.db.obter_vitorias(self.jogador.nome)  # Atualiza vitórias
-        print(f"Vitórias carregadas: {self.jogador.vitorias}")  # Log para debug
- 
